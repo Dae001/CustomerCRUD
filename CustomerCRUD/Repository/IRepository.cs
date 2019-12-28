@@ -5,7 +5,7 @@ namespace CustomerCRUD.Repository
 {
     public interface IRepository
     {
-        Order find(int id);
+        Order find(string id);
         List<Order> GetAll();
         Order Add(Order order);
         Order Update(Order order);

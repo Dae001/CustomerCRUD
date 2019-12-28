@@ -16,10 +16,13 @@ namespace CustomerCRUD.Dapper
 
         private IDbConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["NorthwindDB"].ConnectionString);
 
-        public Order find(int id)
+        public Order find(string customerID)
         {
-            string query = "Select id,  nroinvoice, companyid, customer, ammount, nroproducts, datecreate from Orders where Id = @Id";
-            return this.db.Query<Order>(query, new { Id = id }).SingleOrDefault();
+            // try catch나 using를 사용해야됨
+            string query = "SELECT TOP(1000) OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, " +
+                           "ShipName, ShipAddress, ShipCity, ShipRegion,ShipPostalCode,ShipCountry " +
+                           "FROM dbo.Orders Where CustomerID = @CustomerID";
+            return this.db.Query<Order>(query, new { CustomerID = customerID }).SingleOrDefault();
         }
 
         public Order Add(Order order)
@@ -39,8 +42,8 @@ namespace CustomerCRUD.Dapper
         public List<Order> GetAll()
         {
 
-            string query = "Select id,  nroinvoice, company, customer, datecreate from dbo.Orders; " +
-                           "Select id, idInvoice, productname, quantity, unitprice, subtotal from dbo.OrderDetails; ";
+            string query = "Select * from dbo.Orders; " +
+                           "Select * from dbo.OrderDetails; ";
 
             using (var multipleResults = this.db.QueryMultiple(query))
             {
